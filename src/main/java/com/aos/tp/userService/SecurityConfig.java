@@ -5,29 +5,40 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // Désactive CSRF pour les requêtes sans état (comme JWT)
+                .csrf(csrf -> csrf.disable())  // Disable CSRF for stateless requests like JWT
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()  // Permet l'enregistrement sans authentification
-                        .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()  // Permet la connexion sans authentification
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .anyRequest().authenticated() // Tous les autres requêtes nécessitent une authentification
+                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()  // Allow registration without authentication
+                        .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()  // Allow login without authentication
+                        .requestMatchers("/h2-console/**").permitAll()  // Allow H2 console access
+                        .anyRequest().authenticated()  // Require authentication for all other requests
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS) // Utilisation de l'authentification sans état (JWT)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Stateless authentication (JWT)
                 );
 
-        return http.build();  // Retourne la configuration de sécurité construite
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();  // Return the configured SecurityFilterChain
     }
 
 

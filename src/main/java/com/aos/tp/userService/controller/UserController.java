@@ -1,6 +1,5 @@
 package com.aos.tp.userService.controller;
 
-
 import com.aos.tp.userService.model.Users;
 import com.aos.tp.userService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +17,17 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Point de terminaison pour enregistrer un utilisateur
+    // Endpoint to register a new user
     @PostMapping("/register")
     public ResponseEntity<Users> registerUser(@RequestBody Users userRequest) {
         Users newUser = userService.registerUser(userRequest.getUsername(), userRequest.getPassword());
-        return ResponseEntity.ok(newUser);
+        return ResponseEntity.ok(newUser);  // Return the newly created user (without token)
     }
 
-    // Point de terminaison pour authentifier un utilisateur
+    // Endpoint to authenticate a user and return a JWT token
     @PostMapping("/login")
     public ResponseEntity<String> authenticateUser(@RequestBody Users userRequest) {
-        String token = String.valueOf(userService.authenticateUser(userRequest.getUsername(), userRequest.getPassword()));
-        return ResponseEntity.ok(token);
+        String token = userService.authenticateUser(userRequest.getUsername(), userRequest.getPassword());
+        return ResponseEntity.ok(token);  // Return the JWT token on successful login
     }
 }
