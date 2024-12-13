@@ -2,8 +2,12 @@ package com.aos.tp.orderService.service;
 
 import com.aos.tp.orderService.model.Order;
 import com.aos.tp.orderService.repository.OrderRepository;
+import com.aos.tp.userService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +15,11 @@ import java.util.Optional;
 @Service
 public class OrderService {
 
+    @Autowired
     private final OrderRepository orderRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     public OrderService(OrderRepository orderRepository) {
@@ -25,6 +33,9 @@ public class OrderService {
         }
 
         // Crée une nouvelle commande
+        if (!userRepository.existsById(userId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         Order order = new Order(userId, product, quantity);
         return orderRepository.save(order); // Sauvegarde dans la base de données
     }
