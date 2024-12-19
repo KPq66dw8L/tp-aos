@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    // Méthode pour trouver les commandes d'un utilisateur spécifique
     List<Order> findByUserId(Long userId);
 }

@@ -8,13 +8,12 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Identifiant unique de la commande
+    private Long id;
 
-    private Long userId;  // Identifiant de l'utilisateur qui a passé la commande
-    private String product;  // Nom ou description du produit
-    private int quantity;  // Quantité commandée
+    private Long userId;
+    private String product;
+    private int quantity;
 
-    // Constructeurs
     public Order() {
     }
 
@@ -24,7 +23,6 @@ public class Order {
         this.quantity = quantity;
     }
 
-    // Getters et Setters
     public Long getId() {
         return id;
     }

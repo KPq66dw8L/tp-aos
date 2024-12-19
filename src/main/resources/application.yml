@@ -17,11 +17,5 @@ spring:
             - StripPrefix=1
             - name: JwtAuthorizationFilter # Applique le filtre JWT personnalisé
 
-jwt:
-  secret: MySecretKey # Clé secrète pour le JWT
-  expiration: 3600 # Durée d'expiration du JWT en secondes
-  header: Authorization # En-tête contenant le token JWT
-  prefix: Bearer # Préfixe du token JWT
-
 server:
   port: 8083 # Le port où l'API Gateway écoute

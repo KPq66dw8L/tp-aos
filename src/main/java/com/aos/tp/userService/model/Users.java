@@ -14,7 +14,6 @@ public class Users {
     private String username;
     private String password;
 
-    // Constructeurs
     public Users() {
     }
 
@@ -23,7 +22,6 @@ public class Users {
         this.password = password;
     }
 
-    // Getters et Setters
     public Long getId() {
         return id;
     }
@@ -48,7 +46,6 @@ public class Users {
         this.password = password;
     }
 
-    // toString pour le débogage
     @Override
     public String toString() {
         return "User{" +

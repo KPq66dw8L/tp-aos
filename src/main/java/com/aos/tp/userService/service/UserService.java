@@ -23,24 +23,18 @@ public class UserService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // Register a user
     public Users registerUser(String username, String password) {
-        // Check if username already exists
         if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists!");
         }
 
-        // Encode password
         String encodedPassword = passwordEncoder.encode(password);
 
-        // Create and save the new user
         Users newUser = new Users(username, encodedPassword);
         return userRepository.save(newUser);
     }
 
-    // Authenticate a user and generate JWT token
     public String authenticateUser(String username, String password) {
-        // Find the user by username
         Optional<Users> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) {
             throw new RuntimeException("Invalid username or password!");
@@ -48,12 +42,10 @@ public class UserService {
 
         Users user = optionalUser.get();
 
-        // Check if the password matches
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid username or password!");
         }
 
-        // Generate JWT token
         return jwtTokenProvider.generateToken(username);
     }
 }

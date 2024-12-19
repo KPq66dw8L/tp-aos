@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 
 import java.io.IOException;
 
-@WebFilter("/api/*")  // Optionally specify the URL patterns to filter
+@WebFilter("/api/*")
 public class JwtAuthenticationFilter implements Filter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -36,24 +36,23 @@ public class JwtAuthenticationFilter implements Filter {
             String username = jwtTokenProvider.getUsernameFromToken(token);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    username, null, null  // You can include authorities if needed here
+                    username, null, null
             );
 
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
 
-            // Set the authentication in the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        filterChain.doFilter(request, response);  // Continue the filter chain
+        filterChain.doFilter(request, response);
     }
 
     private String extractToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);  // Remove "Bearer " prefix
+            return bearerToken.substring(7);
         }
-        return null;  // Return null if no token is present
+        return null;
     }
 
     @Override

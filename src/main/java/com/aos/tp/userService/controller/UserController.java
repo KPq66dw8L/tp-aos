@@ -17,17 +17,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Endpoint to register a new user
     @PostMapping("/register")
     public ResponseEntity<Users> registerUser(@RequestBody Users userRequest) {
         Users newUser = userService.registerUser(userRequest.getUsername(), userRequest.getPassword());
-        return ResponseEntity.ok(newUser);  // Return the newly created user (without token)
+        return ResponseEntity.ok(newUser);
     }
 
-    // Endpoint to authenticate a user and return a JWT token
     @PostMapping("/login")
     public ResponseEntity<String> authenticateUser(@RequestBody Users userRequest) {
         String token = userService.authenticateUser(userRequest.getUsername(), userRequest.getPassword());
-        return ResponseEntity.ok(token);  // Return the JWT token on successful login
+        return ResponseEntity.ok(token);
     }
 }

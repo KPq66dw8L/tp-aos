@@ -14,7 +14,6 @@ public class UserDTO {
         this.password = password;
     }
 
-    // Getters et Setters
     public String getUsername() {
         return username;
     }

@@ -26,31 +26,26 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    // Méthode pour créer une commande
     public Order createOrder(Long userId, String product, int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("La quantité doit être supérieure à 0.");
         }
 
-        // Crée une nouvelle commande
         if (!userRepository.existsById(userId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         Order order = new Order(userId, product, quantity);
-        return orderRepository.save(order); // Sauvegarde dans la base de données
+        return orderRepository.save(order);
     }
 
-    // Méthode pour récupérer toutes les commandes
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    // Méthode pour récupérer une commande par son ID
     public Optional<Order> getOrderById(Long orderId) {
         return orderRepository.findById(orderId);
     }
 
-    // Méthode pour récupérer les commandes d'un utilisateur spécifique
     public List<Order> getOrdersByUserId(Long userId) {
         return orderRepository.findByUserId(userId);
     }

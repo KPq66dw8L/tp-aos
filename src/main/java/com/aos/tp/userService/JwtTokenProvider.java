@@ -10,29 +10,23 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final String secretKey = "MySecretKey"; // Secret key to sign the JWT tokens
-    private final long validityInMilliseconds = 3600000; // Token validity duration (1 hour)
+    private final String secretKey = "MySecretKey";
+    private final long validityInMilliseconds = 3600000;
 
-    // Generate a JWT token for the user
     public String generateToken(String username) {
         long now = System.currentTimeMillis();
         long expiry = now + validityInMilliseconds;
 
-        // Token Payload
         String payload = "{\"sub\":\"" + username + "\",\"iat\":" + now + ",\"exp\":" + expiry + "}";
 
-        // Base64 encode the header and payload
         String header = Base64.getEncoder().encodeToString("{\"alg\":\"HS256\",\"typ\":\"JWT\"}".getBytes());
         String encodedPayload = Base64.getEncoder().encodeToString(payload.getBytes());
 
-        // Generate the signature (HMAC-SHA256)
         String signature = sign(header + "." + encodedPayload, secretKey);
 
-        // Return the complete token
         return header + "." + encodedPayload + "." + signature;
     }
 
-    // Validate a JWT token
     public boolean validateToken(String token) {
         try {
             String[] parts = token.split("\\.");
@@ -42,11 +36,9 @@ public class JwtTokenProvider {
             String payload = parts[1];
             String signature = parts[2];
 
-            // Validate the signature
             String expectedSignature = sign(header + "." + payload, secretKey);
             if (!expectedSignature.equals(signature)) return false;
 
-            // Validate expiration
             String decodedPayload = new String(Base64.getDecoder().decode(payload));
             long expiry = Long.parseLong(decodedPayload.replaceAll(".*\"exp\":(\\d+).*", "$1"));
             return expiry > System.currentTimeMillis();
@@ -55,7 +47,6 @@ public class JwtTokenProvider {
         }
     }
 
-    // Extract username from the JWT token
     public String getUsernameFromToken(String token) {
         String[] parts = token.split("\\.");
         if (parts.length != 3) throw new IllegalArgumentException("Invalid token");
@@ -64,7 +55,6 @@ public class JwtTokenProvider {
         return payload.replaceAll(".*\"sub\":\"([^\"]+)\".*", "$1");
     }
 
-    // Method to generate HMAC-SHA256 signature
     private String sign(String data, String secret) {
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
